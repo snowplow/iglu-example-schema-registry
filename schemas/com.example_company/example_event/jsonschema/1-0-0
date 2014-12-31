@@ -2,7 +2,7 @@
 	"$schema": "http://iglucentral.com/schemas/com.snowplowanalytics.self-desc/schema/jsonschema/1-0-0#",
 	"description": "Schema for an example Goeuro event",
 	"self": {
-		"vendor": "com.goeuro",
+		"vendor": "com.example_company",
 		"name": "example_event",
 		"format": "jsonschema",
 		"version": "1-0-0"

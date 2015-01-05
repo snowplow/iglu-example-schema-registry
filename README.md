@@ -73,6 +73,8 @@ In both cases (custom unstructured events and contexts), the data is sent in as 
 
 For more detail, please see the technical documentation for the specific tracker you're implementing.
 
+Note: we recommend testing that the data you're sending into Snowplow conforms to the schemas you've defined and uploaded into Iglu, before pushing updates into production. This [online JSON schema validator](https://json-schema-validator.herokuapp.com/) is a very useful resource for doing so.
+
 ## 6. Managing schema migrations
 
 When you use Snowplow, the schema for each event and context lives with the data. That means you have the flexibility to evolve your schema definition over time.

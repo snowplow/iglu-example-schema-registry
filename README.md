@@ -1,4 +1,4 @@
-# Example event dictionary
+# Example schema registry
 
 ## Overview
 

@@ -64,7 +64,7 @@ Useful resources
 Once you've defined the jsonschema for your new event or context type you need to create a correpsonding jsonpath file and sql table definition. This can be done programmatically using [Schema Guru] [schema-guru-github]. From the root of the repo:
 
 ```
-/path/to/schema-guru-0.5.0 ddl --with-json-paths schemas/com.mycompany/new_event_or_context_name
+/path/to/schema-guru-0.6.1 ddl --with-json-paths schemas/com.mycompany/new_event_or_context_name
 ```
 
 A corresponding jsonpath file and sql table definition file will be generated in the appropriate folder in the repo.
@@ -72,7 +72,7 @@ A corresponding jsonpath file and sql table definition file will be generated in
 Note that you can create SQL table definition and jsonpath files for all the events / contexts schema'd as follows:
 
 ```
-/path/to/schema-guru-0.5.0 ddl --with-json-paths schemas/com.mycompany
+/path/to/schema-guru-0.6.1 ddl --with-json-paths schemas/com.mycompany
 ```
 
 

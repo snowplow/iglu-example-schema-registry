@@ -19,7 +19,7 @@
 		},
 		"exampleNumericField": {
 			"type": "number",
-			"maxDecimal": 3
+ 			"multipleOf": 0.0001
 		},
 		"exampleTimestampField": {
 			"type": "string",

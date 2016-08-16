@@ -1,11 +1,11 @@
-# Example schema registry
+# nl.persgroep schema registry
 
 ## Overview
 
 Before you can send your own event and context types into Snowplow (using the track unstructured events and custom contexts features of Snowplow), you need to:
 
 1. Define a JSON schema for each of the events and context types
-2. Upload those schemas to your Iglu schema repository
+2. Upload those schemas to your Iglu schema registry
 3. Define a corresponding jsonpath file, and make sure this is uploaded your jsonpaths directory in Amazon S3
 4. Create a corresponding Redshfit table definition, and create this table in your Redshift cluster
 
@@ -15,8 +15,8 @@ Once you have completed the above, you can send in data that conforms to the sch
 
 We recommend setting up the following 3 tools before staring:
 
-1. Git so you can easily clone the repo and make updates to it
-2. [Schema Guru] [schema-guru-github]. This will auto-generate your jsonpath and sql table definitions
+1. Git so you can easily clone the repo and make updates to it.
+2. [IgluCTL] [igluctl]. This is a command line tool for validating schemas, auto-generating associated SQL table definition and jsonpath files and publishing them to snowplow-mini.
 3. The [AWS CLI] [aws-cli]. This will make it easy to push updates to Iglu at the command line.
 
 
@@ -30,7 +30,39 @@ In order to start sending a new event or context type into Snowplow, you first n
 
 Note that if you have JSON data already and you want to create a corresponding schema, you can do so using [Schema Guru][schema-guru-online], both the [web UI][schema-guru-online] and the [CLI][schema-guru-github].
 
+Once you have your schema, make sure to validate it using [IgluCTL]:
+
+```
+$ /path/to/igluctl lint schemas/com.mycompany/my_new_event_or_context
+```
+
 ## 2. Uploading the schemas to Iglu
+
+Once you have created or updated your schemas, you need to push them to Iglu so that they're accessible to the Snowplow data pipeline. 
+
+This is a two part process:
+
+1. [Upload the schemas to snowplow-mini](snowplow-mini) (for testing)
+2. [Upload the schemas to Iglu for the full pipeline](full)
+
+### 2.1 Upload the schemas to snowplow-mini
+
+Run the following command to publish all schemas to the Iglu server bundled with Snowplow-mini:
+
+```
+$ /path/to/static push schemas/nl.persgroep {{snowplow mini ip}}:8081 {{snowplow mini iglu server key (uuid)}}
+```
+
+
+Note that you can specify individual schemas if you prefer e.g.
+
+```
+$ /path/to/static push schemas/nl.persgroep/my_new_event_schema 52.50.57.96:8081 c887c908-7e38-4cf0-90c4-dd9b1ef903e5
+```
+
+Also note that if you're editing existing schemas, the server will need to be rebooted to clear the schema cache. This can be done directly in the EC2 console, or ping yali@snowplowanalytics.com to ask him to to do it.
+
+### 2.2 Upload the schemas to Iglu for the full pipeline
 
 Once you've created your schemas, you need to upload them to Iglu. In practice, this means copying them into S3.
 
@@ -42,20 +74,16 @@ git commit -m "Committed finalized schema"
 git push
 ```
 
-Then push it to Iglu. Note that as a trial user you will have to ask the Snowplow team to do this for you. As a Managed Services
-customer you would be able to do it yourself as follows:
+Then push it to Iglu:
 
 ```
-aws s3 cp schemas s3://snowplow-company-name-iglu-schemas/schemas --include "*" --recursive
+aws s3 cp schemas s3://snowplow-com-mycompany-iglu-schemas/schemas --include "*" --recursive
 ```
-
-Note you'll need to update the above command to replace the bucket `s3://snowplow-company-name-iglu-schemas` with your S3 backed [Iglu static server repo][iglu-static-server].
-
 
 Useful resources
 
 * [Iglu schema repository 0.1.0 release blog post](http://snowplowanalytics.com/blog/2014/07/01/iglu-schema-repository-released/)
-* [Iglu central](https://github.com/snowplow/iglu-central) - centralized repository for all the schemas hosted by the Snowplow team
+* [Iglu central](https://github.com/snowplow/iglu-central) - centralized registry for all the schemas hosted by the Snowplow team
 * [Iglu](https://github.com/snowplow/iglu) - respository with both Iglu server and client libraries
 
 
@@ -64,7 +92,7 @@ Useful resources
 Once you've defined the jsonschema for your new event or context type you need to create a correpsonding jsonpath file and sql table definition. This can be done programmatically using [Schema Guru] [schema-guru-github]. From the root of the repo:
 
 ```
-/path/to/schema-guru-0.6.1 ddl --with-json-paths schemas/com.mycompany/new_event_or_context_name
+/path/to/igluctl static generate --with-json-paths schemas schemas/com.mycompany/new_event_or_context_name
 ```
 
 A corresponding jsonpath file and sql table definition file will be generated in the appropriate folder in the repo.
@@ -72,11 +100,13 @@ A corresponding jsonpath file and sql table definition file will be generated in
 Note that you can create SQL table definition and jsonpath files for all the events / contexts schema'd as follows:
 
 ```
-/path/to/schema-guru-0.6.1 ddl --with-json-paths schemas/com.mycompany
+/path/to/igluctl static generate --with-json-paths schemas schemas/com.mycompany
 ```
 
 
 ## 4. Uploading the jsonpath files to Iglu
+
+*Generally the process is as follows:*
 
 One you've finalized the new jsonpath file, commit it to Git. From the project root:
 
@@ -90,10 +120,8 @@ Then push to Iglu. Again, you can only do this yourself as a Managed Services cu
 ask a member of the Snowplow Analytics team to do this for you.
 
 ```
-aws s3 cp jsonpaths s3://snowplow-company-name-iglu-jsonpaths/jsonpaths --include "*" --recursive
+aws s3 cp jsonpaths s3://snowplow-com-mycompany-iglu-jsonpaths/jsonpaths --include "*" --recursive
 ```
-
-Note you'll need to update the s3 location `s3://snowplow-company-name-iglu-jsonpaths/jsonpaths` with the s3 location you've configured Snowplow to fetch jsonpath files from.
 
 ## 5. Creating or updating the table definition in Redshift
 
@@ -103,6 +131,12 @@ Note that it is essential that any new tables you create are owned by the `stora
 
 ```sql
 CREATE TABLE my_new_table...
+```
+
+Please run the following statement to assign ownership of it to `storageloader`
+
+```sql
+ALTER TABLE my_new_table OWNER TO storageloader;
 ```
 
 ## 6. Sending data into Snowplow using the schema reference as custom unstructured events or contexts
@@ -134,6 +168,8 @@ In both cases (custom unstructured events and contexts), the data is sent in as 
 For more detail, please see the technical documentation for the specific tracker you're implementing.
 
 Note: we recommend testing that the data you're sending into Snowplow conforms to the schemas you've defined and uploaded into Iglu, before pushing updates into production. This [online JSON schema validator](http://jsonschemalint.com/draft4/) is a very useful resource for doing so.
+
+We also recommend testing that the events are sent successfully using Snowplow-Mini. You do this by configuring the collector in the tracker to `52.50.57.96:8080` and then logging onto http://52.90.3.206 to review the results e.g. in Kibana. (Follow the links on the page.) Note that you need to have your IP whitelisted before you can view data on Snowplow-mini.
 
 ## 7. Managing schema migrations
 
@@ -171,4 +207,4 @@ Documentaiton on creating tablels in Redshift:
 [schema-guru-github]: https://github.com/snowplow/schema-guru?_sp=44dbe9a530cc476d.1436355830779
 [aws-cli]: https://aws.amazon.com/cli/
 [schema-ver]: http://snowplowanalytics.com/blog/2014/05/13/introducing-schemaver-for-semantic-versioning-of-schemas/
-[iglu-static-server]: https://github.com/snowplow/iglu/wiki/Static-repo-setup
+[igluctl]: https://github.com/snowplow/iglu/wiki/Igluctl

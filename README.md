@@ -1,4 +1,4 @@
-# nl.persgroep schema registry
+# example schema registry
 
 ## Overview
 
@@ -50,14 +50,14 @@ This is a two part process:
 Run the following command to publish all schemas to the Iglu server bundled with Snowplow-mini:
 
 ```
-$ /path/to/static push schemas/nl.persgroep {{snowplow mini ip}}:8081 {{snowplow mini iglu server key (uuid)}}
+$ /path/to/static push schemas/com.mycompany {{ snowplow-mini ip }}:8081 {{ snowplow-mini iglu server key (uuid) }}
 ```
 
 
 Note that you can specify individual schemas if you prefer e.g.
 
 ```
-$ /path/to/static push schemas/nl.persgroep/my_new_event_schema 52.50.57.96:8081 c887c908-7e38-4cf0-90c4-dd9b1ef903e5
+$ /path/to/static push schemas/com.mycompany/my_new_event_schema {{ snowplow-mini ip }}:8081 {{ snowplow-mini iglu-server key (uuid) }}
 ```
 
 Also note that if you're editing existing schemas, the server will need to be rebooted to clear the schema cache. This can be done directly in the EC2 console, or ping yali@snowplowanalytics.com to ask him to to do it.
@@ -169,7 +169,7 @@ For more detail, please see the technical documentation for the specific tracker
 
 Note: we recommend testing that the data you're sending into Snowplow conforms to the schemas you've defined and uploaded into Iglu, before pushing updates into production. This [online JSON schema validator](http://jsonschemalint.com/draft4/) is a very useful resource for doing so.
 
-We also recommend testing that the events are sent successfully using Snowplow-Mini. You do this by configuring the collector in the tracker to `52.50.57.96:8080` and then logging onto http://52.90.3.206 to review the results e.g. in Kibana. (Follow the links on the page.) Note that you need to have your IP whitelisted before you can view data on Snowplow-mini.
+We also recommend testing that the events are sent successfully using Snowplow-Mini. You do this by configuring the collector in the tracker to `{{ snowplow-mini ip }}:8080` and then logging onto http://{{ snowplow-mini ip }} to review the results e.g. in Kibana. (Follow the links on the page.) Note that you need to have your IP whitelisted before you can view data on Snowplow-mini.
 
 ## 7. Managing schema migrations
 

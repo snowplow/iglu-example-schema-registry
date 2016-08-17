@@ -33,7 +33,7 @@ Note that if you have JSON data already and you want to create a corresponding s
 Once you have your schema, make sure to validate it using [IgluCTL]:
 
 ```
-$ /path/to/igluctl lint schemas/com.mycompany/my_new_event_or_context
+$ /path/to/igluctl lint /path/to/schemas/com.mycompany/my_new_event_or_context
 ```
 
 ## 2. Uploading the schemas to Iglu
@@ -50,14 +50,14 @@ This is a two part process:
 Run the following command to publish all schemas to the Iglu server bundled with Snowplow-mini:
 
 ```
-$ /path/to/static push schemas/com.mycompany {{ snowplow-mini ip }}:8081 {{ snowplow-mini iglu server key (uuid) }}
+$ /path/to/igluctl static push /path/to/schemas/com.mycompany {{ snowplow-mini ip }}:8081 {{ snowplow-mini iglu server key (uuid) }}
 ```
 
 
 Note that you can specify individual schemas if you prefer e.g.
 
 ```
-$ /path/to/static push schemas/com.mycompany/my_new_event_schema {{ snowplow-mini ip }}:8081 {{ snowplow-mini iglu-server key (uuid) }}
+$ /path/to/igluctl static push /path/to/schemas/com.mycompany/my_new_event_schema {{ snowplow-mini ip }}:8081 {{ snowplow-mini iglu-server key (uuid) }}
 ```
 
 Also note that if you're editing existing schemas, the server will need to be rebooted to clear the schema cache. This can be done directly in the EC2 console, or ping yali@snowplowanalytics.com to ask him to to do it.
@@ -92,7 +92,7 @@ Useful resources
 Once you've defined the jsonschema for your new event or context type you need to create a correpsonding jsonpath file and sql table definition. This can be done programmatically using [Schema Guru] [schema-guru-github]. From the root of the repo:
 
 ```
-/path/to/igluctl static generate --with-json-paths schemas schemas/com.mycompany/new_event_or_context_name
+/path/to/igluctl static generate --with-json-paths /path/to/schemas/com.mycompany/new_event_or_context_name
 ```
 
 A corresponding jsonpath file and sql table definition file will be generated in the appropriate folder in the repo.
@@ -100,7 +100,7 @@ A corresponding jsonpath file and sql table definition file will be generated in
 Note that you can create SQL table definition and jsonpath files for all the events / contexts schema'd as follows:
 
 ```
-/path/to/igluctl static generate --with-json-paths schemas schemas/com.mycompany
+/path/to/igluctl static generate --with-json-paths /path/to/schemas/com.mycompany
 ```
 
 

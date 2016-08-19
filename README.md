@@ -50,17 +50,17 @@ This is a two part process:
 Run the following command to publish all schemas to the Iglu server bundled with Snowplow-mini:
 
 ```
-$ /path/to/igluctl static push /path/to/schemas/com.mycompany {{ snowplow-mini ip }}:8081 {{ snowplow-mini iglu server key (uuid) }}
+$ ./iglu_server_upload.sh http://{{ snowplow-mini ip }}:8081:8081 {{ snowplow-mini iglu server key (uuid) }} schemas
 ```
 
 
 Note that you can specify individual schemas if you prefer e.g.
 
 ```
-$ /path/to/igluctl static push /path/to/schemas/com.mycompany/my_new_event_schema {{ snowplow-mini ip }}:8081 {{ snowplow-mini iglu-server key (uuid) }}
+$ ./iglu_server_upload.sh http://{{ snowplow-mini ip }}:8081:8081 {{ snowplow-mini iglu server key (uuid) }} schemas/com.mycompany/my_new_event_schema 
 ```
 
-Also note that if you're editing existing schemas, the server will need to be rebooted to clear the schema cache. This can be done directly in the EC2 console, or ping yali@snowplowanalytics.com to ask him to to do it.
+Also note that if you're editing existing schemas, the server will need to be rebooted to clear the schema cache. This can be done directly in the EC2 console, or ping support@snowplowanalytics.com to ask a member of the Snowplow tema to do so.
 
 ### 2.2 Upload the schemas to Iglu for the full pipeline
 

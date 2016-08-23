@@ -50,7 +50,7 @@ This is a two part process:
 Run the following command to publish all schemas to the Iglu server bundled with Snowplow-mini:
 
 ```
-$ ./iglu_server_upload.sh http://{{ snowplow-mini ip }}:8081:8081 {{ snowplow-mini iglu server key (uuid) }} schemas
+$ ./iglu_server_upload.sh http://{{ snowplow-mini ip }}:8081 {{ snowplow-mini iglu server key (uuid) }} schemas
 ```
 
 

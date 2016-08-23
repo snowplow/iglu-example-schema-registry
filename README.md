@@ -57,7 +57,7 @@ $ ./iglu_server_upload.sh http://{{ snowplow-mini ip }}:8081 {{ snowplow-mini ig
 Note that you can specify individual schemas if you prefer e.g.
 
 ```
-$ ./iglu_server_upload.sh http://{{ snowplow-mini ip }}:8081:8081 {{ snowplow-mini iglu server key (uuid) }} schemas/com.mycompany/my_new_event_schema 
+$ ./iglu_server_upload.sh http://{{ snowplow-mini ip }}:8081 {{ snowplow-mini iglu server key (uuid) }} schemas/com.mycompany/my_new_event_schema 
 ```
 
 Also note that if you're editing existing schemas, the server will need to be rebooted to clear the schema cache. This can be done directly in the EC2 console, or ping support@snowplowanalytics.com to ask a member of the Snowplow tema to do so.

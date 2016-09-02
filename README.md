@@ -106,8 +106,6 @@ Note that you can create SQL table definition and jsonpath files for all the eve
 
 ## 4. Uploading the jsonpath files to Iglu
 
-*Generally the process is as follows:*
-
 One you've finalized the new jsonpath file, commit it to Git. From the project root:
 
 ```
@@ -116,8 +114,7 @@ git commit -m "Committed finalized jsonpath"
 git push
 ```
 
-Then push to Iglu. Again, you can only do this yourself as a Managed Services customers. As a trial user you will need to
-ask a member of the Snowplow Analytics team to do this for you.
+Then push to Iglu:
 
 ```
 aws s3 cp jsonpaths s3://snowplow-com-mycompany-iglu-jsonpaths/jsonpaths --include "*" --recursive

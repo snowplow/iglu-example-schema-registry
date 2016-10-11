@@ -13,11 +13,10 @@ Once you have completed the above, you can send in data that conforms to the sch
 
 ## Prerequisites
 
-We recommend setting up the following 3 tools before staring:
+We recommend setting up the following two tools before staring:
 
 1. Git so you can easily clone the repo and make updates to it.
-2. [IgluCTL] [igluctl]. This is a command line tool for validating schemas, auto-generating associated SQL table definition and jsonpath files and publishing them to snowplow-mini.
-3. The [AWS CLI] [aws-cli]. This will make it easy to push updates to Iglu at the command line.
+2. [Igluctl] [igluctl]. This is a command line tool for validating schemas, auto-generating associated SQL table definition and jsonpath files and publishing them to snowplow-mini or S3
 
 
 ## 1. Creating the schemas
@@ -30,11 +29,18 @@ In order to start sending a new event or context type into Snowplow, you first n
 
 Note that if you have JSON data already and you want to create a corresponding schema, you can do so using [Schema Guru][schema-guru-online], both the [web UI][schema-guru-online] and the [CLI][schema-guru-github].
 
-Once you have your schema, make sure to validate it using [IgluCTL]:
+Once you have your schema, make sure to validate it using [igluctl]:
 
 ```
 $ /path/to/igluctl lint /path/to/schemas/com.mycompany/my_new_event_or_context
 ```
+
+For Windows:
+
+```
+> java -jar /path/to/igluctl lint /path/to/schemas/com.mycompany/my_new_event_or_context
+```
+
 
 Igluctl has two severity levels that it can use when validating schemas. By default it uses level (1), which checks that the schemas are simply valid. We recommend validating schemas against a higher level (2). This will fail schemas that:
 
@@ -48,9 +54,10 @@ $ /path/to/igluctl lint /path/to/schemas/com.mycompany/my_new_event_or_context -
 ```
 
 
+
 ## 2. Uploading the schemas to Iglu
 
-Once you have created or updated your schemas, you need to push them to Iglu so that they're accessible to the Snowplow data pipeline. 
+Once you have created or updated your schemas, you need to push them to Iglu so that they're accessible to the Snowplow data pipeline.
 
 This is a two part process:
 
@@ -59,26 +66,40 @@ This is a two part process:
 
 ### 2.1 Upload the schemas to snowplow-mini
 
+In order to upload schemas you need to have Snowplow Mini IP and Iglu Registry Master key.
+Here we are refer to them as environment variables (those are just examples, you'll have unique IP and key):
+
+```bash
+SNOWPLOW_MINI_IP=127.0.0.1
+IGLU_REGISTRY_MASTER_KEY=fd08697f-435c-4916-9c85-d0e50bbb8913
+```
+
+Or for Windows:
+
+```
+SET SNOWPLOW_MINI_IP=127.0.0.1
+SET IGLU_REGISTRY_MASTER_KEY=fd08697f-435c-4916-9c85-d0e50bbb8913
+```
+
 Run the following command to publish all schemas to the Iglu server bundled with Snowplow-mini:
 
+```bash
+$ /path/to/igluctl static push ./schemas $SNOWPLOW_MINI_IP:8081 $IGLU_REGISTRY_MASTER_KEY --public
 ```
-$ ./iglu_server_upload.sh http://{{ snowplow-mini ip }}:8081 {{ snowplow-mini iglu server key (uuid) }} schemas
-```
-
 
 Note that you can specify individual schemas if you prefer e.g.
 
-```
-$ ./iglu_server_upload.sh http://{{ snowplow-mini ip }}:8081 {{ snowplow-mini iglu server key (uuid) }} schemas/com.mycompany/my_new_event_schema 
+```bash
+$ /path/to/igluctl static push ./schemas/com.mycompany/my_new_event_schema $SNOWPLOW_MINI_IP:8081 $IGLU_REGISTRY_MASTER_KEY --public
 ```
 
-Also note that if you're editing existing schemas, the server will need to be rebooted to clear the schema cache. This can be done directly in the EC2 console, or ping support@snowplowanalytics.com to ask a member of the Snowplow tema to do so.
+Also note that if you're editing existing schemas, the server will need to be rebooted to clear the schema cache. This can be done directly in the EC2 console, or ping support@snowplowanalytics.com to ask a member of the Snowplow team to do so.
 
 ### 2.2 Upload the schemas to Iglu for the full pipeline
 
 Once you've created your schemas, you need to upload them to Iglu. In practice, this means copying them into S3.
 
-This can be done directly via the [AWS CLI](http://aws.amazon.com/cli/). In the project root, first commit the schema to Git:
+This can also be done via Igluctl. In the project root, first commit the schema to Git:
 
 ```
 git add .
@@ -86,11 +107,13 @@ git commit -m "Committed finalized schema"
 git push
 ```
 
-Then push it to Iglu:
+Then push it to S3 bucket:
 
 ```
-aws s3 cp schemas s3://snowplow-com-mycompany-iglu-schemas/schemas --include "*" --recursive
+$ /path/to/igluctl static s3cp ./schemas snowplow-com-mycompany-iglu-schemas-bucket --accessKeyId ABCDEF --secretAccessKey GHIJKILM/12345XYZ --region us-east-1
 ```
+
+Note that you also can pass credentials via configuration file or environment variables, as with any [AWS tool] [aws-credentials].
 
 Useful resources
 
@@ -99,9 +122,9 @@ Useful resources
 * [Iglu](https://github.com/snowplow/iglu) - respository with both Iglu server and client libraries
 
 
-## 3. Creating the jsonpath files and SQL table definitions
+## 3. Creating the JSON Path files and SQL table definitions
 
-Once you've defined the jsonschema for your new event or context type you need to create a correpsonding jsonpath file and sql table definition. This can be done programmatically using [Schema Guru] [schema-guru-github]. From the root of the repo:
+Once you've defined the jsonschema for your new event or context type you need to create a correpsonding jsonpath file and sql table definition. This can be done programmatically using Igluctl. From the root of the repo:
 
 ```
 /path/to/igluctl static generate --with-json-paths /path/to/schemas/com.mycompany/new_event_or_context_name
@@ -118,7 +141,7 @@ Note that you can create SQL table definition and jsonpath files for all the eve
 
 ## 4. Uploading the jsonpath files to Iglu
 
-One you've finalized the new jsonpath file, commit it to Git. From the project root:
+Once you've finalized the new jsonpath file, commit it to Git. From the project root:
 
 ```
 git add .
@@ -129,7 +152,7 @@ git push
 Then push to Iglu:
 
 ```
-aws s3 cp jsonpaths s3://snowplow-com-mycompany-iglu-jsonpaths/jsonpaths --include "*" --recursive
+$ /path/to/igluctl static s3cp ./jsonpaths snowplow-com-mycompany-iglu-jsonpaths-bucket --accessKeyId ABCDEF --secretAccessKey GHIJKILM/12345XYZ --region us-east-1
 ```
 
 ## 5. Creating or updating the table definition in Redshift
@@ -178,7 +201,7 @@ For more detail, please see the technical documentation for the specific tracker
 
 Note: we recommend testing that the data you're sending into Snowplow conforms to the schemas you've defined and uploaded into Iglu, before pushing updates into production. This [online JSON schema validator](http://jsonschemalint.com/draft4/) is a very useful resource for doing so.
 
-We also recommend testing that the events are sent successfully using Snowplow-Mini. You do this by configuring the collector in the tracker to `{{ snowplow-mini ip }}:8080` and then logging onto http://{{ snowplow-mini ip }} to review the results e.g. in Kibana. (Follow the links on the page.) Note that you need to have your IP whitelisted before you can view data on Snowplow-mini.
+We also recommend testing that the events are sent successfully using Snowplow-Mini. You do this by configuring the collector in the tracker to `$SNOWPLOW_MINI_IP:8080` and then logging onto `http://$SNOWPLOW_MINI_IP` to review the results e.g. in Kibana. (Follow the links on the page.) Note that you need to have your IP whitelisted before you can view data on Snowplow-mini.
 
 ## 7. Managing schema migrations
 
@@ -212,8 +235,8 @@ Documentaiton on creating tablels in Redshift:
 * Example Redshift table definitions can be found on the [Snowplow repo](https://github.com/snowplow/snowplow/tree/master/4-storage/redshift-storage/sql). Note that corresponding jsonschema definitions are stored in [Iglu central](https://github.com/snowplow/iglu-central/tree/master/schemas)
 * Amazon documentation on Redshift create table statements can be found [here](http://docs.aws.amazon.com/redshift/latest/dg/r_CREATE_TABLE_NEW.html). A list of Redshift data types can be found [here](http://docs.aws.amazon.com/redshift/latest/dg/c_Supported_data_types.html)
 
+[aws-credentials]: http://docs.aws.amazon.com/cli/latest/userguide/cli-chap-getting-started.html#config-settings-and-precedence
 [schema-guru-online]: http://schemaguru.snowplowanalytics.com/
 [schema-guru-github]: https://github.com/snowplow/schema-guru?_sp=44dbe9a530cc476d.1436355830779
-[aws-cli]: https://aws.amazon.com/cli/
 [schema-ver]: http://snowplowanalytics.com/blog/2014/05/13/introducing-schemaver-for-semantic-versioning-of-schemas/
 [igluctl]: https://github.com/snowplow/iglu/wiki/Igluctl

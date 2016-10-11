@@ -2,7 +2,7 @@
 
 ## Overview
 
-Before you can send your own event and context types into Snowplow (using the track unstructured events and custom contexts features of Snowplow), you need to:
+Before you can send your own event and context types into Snowplow (using the track unstructured events or track self-describing events and custom contexts features of Snowplow), you need to:
 
 1. Define a JSON schema for each of the events and context types
 2. Upload those schemas to your Iglu schema registry

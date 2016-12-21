@@ -15,11 +15,15 @@
 			"maxLength": 255
 		},
 		"exampleIntegerField": {
-			"type": "integer"
+			"type": "integer",
+			"minimum": 0,
+			"maximum": 100000
 		},
 		"exampleNumericField": {
 			"type": "number",
- 			"multipleOf": 0.0001
+ 			"multipleOf": 0.0001,
+			"minimum": -1000000,
+			"maximum":  1000000
 		},
 		"exampleTimestampField": {
 			"type": "string",

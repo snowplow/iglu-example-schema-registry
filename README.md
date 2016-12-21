@@ -24,8 +24,8 @@ We recommend setting up the following two tools before staring:
 In order to start sending a new event or context type into Snowplow, you first need to define a new schema for that event.
 
 1. Create a file in the repo for the new schema e.g. `/schemas/com.mycompany/new_event_or_context_name/jsonschema/1-0-0`
-2. Create the schema in that file. Follow the `/schemas/com.example_company/example_event/jsonschema/1-0-0`
-3. Save the file schema
+2. Create the schema in that file. Follow the `/schemas/com.example_company/example_event/jsonschema/1-0-0` example
+3. Save the schema file
 
 Note that if you have JSON data already and you want to create a corresponding schema, you can do so using [Schema Guru][schema-guru-online], both the [web UI][schema-guru-online] and the [CLI][schema-guru-github].
 
@@ -45,7 +45,7 @@ For Windows:
 Igluctl has two severity levels that it can use when validating schemas. By default it uses level (1), which checks that the schemas are simply valid. We recommend validating schemas against a higher level (2). This will fail schemas that:
 
 1. Define a string field without a `maxLength` property. That ensures that when e.g. the corresponding Redshift table DDL is generated, the correct associated column length can be unambiguously set
-2. Define a numeric field without a `min` and `max` properties. That ensures that the when e.g. the corresponding Redshift table DDL is generated, the right numeric field type is set.
+2. Define a numeric field without a `minimum` and `maximum` properties. That ensures that the when e.g. the corresponding Redshift table DDL is generated, the right numeric field type is set.
 
 To lint the schemas using the higher severity level (2) run:
 
@@ -199,7 +199,7 @@ In both cases (custom unstructured events and contexts), the data is sent in as 
 
 For more detail, please see the technical documentation for the specific tracker you're implementing.
 
-Note: we recommend testing that the data you're sending into Snowplow conforms to the schemas you've defined and uploaded into Iglu, before pushing updates into production. This [online JSON schema validator](http://jsonschemalint.com/draft4/) is a very useful resource for doing so.
+Note: we recommend testing that the data you're sending into Snowplow conforms to the schemas you've defined and uploaded into Iglu, before pushing updates into production. This [online JSON schema validator](http://www.jsonschemavalidator.net/) is a very useful resource for doing so.
 
 We also recommend testing that the events are sent successfully using Snowplow-Mini. You do this by configuring the collector in the tracker to `$SNOWPLOW_MINI_IP:8080` and then logging onto `http://$SNOWPLOW_MINI_IP` to review the results e.g. in Kibana. (Follow the links on the page.) Note that you need to have your IP whitelisted before you can view data on Snowplow-mini.
 

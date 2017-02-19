@@ -210,9 +210,8 @@ When you use Snowplow, the schema for each event and context lives with the data
 If you want to change your schema over time, you will need to:
 
 1. Create a new jsonschema file. Depending on how different this is to your current version, you will need to give it the appropriate version number. The [SchemaVer][schema-ver] specification we use when versioning data schemas can be found [here][schema-ver]
-2. Update the corresponding jsonpath files. If you've created a new major schema version, you'll need to create a new jsonpath file e.g. `exmaple_event_2.json`, that exists alongside your existing `example_event_1.json`
-3. For minor schema updates, you should be able to update your existing Redshift table definition e.g. to add add additional columns. For major schema updates, you'll need to create a new Redshift table definition e.g. `com_mycompany_exmaple_event_2.sql`
-4. Start sending data into Snowplow using the new schema version (i.e. update the Iglu reference to point at the new version e.g. `2-0-0` or `1-0-1` rather than `1-0-0`). Note that you will continue to be able to send in data that conforms to the old schema at the same time. In the event that you have an event with two different major schema definitions, each event version will be loaded into a different Redshift table
+2. Rerun `igluctl static generate --with-json-paths` to update the jsonpath file, sql table definition and create a SQL migration script. Note that you'll need to add the `--force` flag to ensure that the updated jsonpath and sql table definition files overwrite the existing files.
+3. Start sending data into Snowplow using the new schema version (i.e. update the Iglu reference to point at the new version e.g. `2-0-0` or `1-0-1` rather than `1-0-0`). Note that you will continue to be able to send in data that conforms to the old schema at the same time. In the event that you have an event with two different major schema definitions, each event version will be loaded into a different Redshift table
 
 ## Additional resources
 

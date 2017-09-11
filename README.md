@@ -1,4 +1,4 @@
-# example schema registry
+# example-schema-registry
 
 ## Overview
 
@@ -17,7 +17,6 @@ We recommend setting up the following two tools before staring:
 
 1. Git so you can easily clone the repo and make updates to it.
 2. [Igluctl] [igluctl]. This is a command line tool for validating schemas, auto-generating associated SQL table definition and jsonpath files and publishing them to snowplow-mini or S3
-
 
 ## 1. Creating the schemas
 
@@ -41,7 +40,6 @@ For Windows:
 > java -jar /path/to/igluctl lint /path/to/schemas/com.mycompany/my_new_event_or_context
 ```
 
-
 Igluctl has two severity levels that it can use when validating schemas. By default it uses level (1), which checks that the schemas are simply valid. We recommend validating schemas against a higher level (2). This will fail schemas that:
 
 1. Define a string field without a `maxLength` property. That ensures that when e.g. the corresponding Redshift table DDL is generated, the correct associated column length can be unambiguously set
@@ -52,8 +50,6 @@ To lint the schemas using the higher severity level (2) run:
 ```
 $ /path/to/igluctl lint /path/to/schemas/com.mycompany/my_new_event_or_context --severityLevel 2
 ```
-
-
 
 ## 2. Uploading the schemas to Iglu
 
@@ -84,16 +80,16 @@ SET IGLU_REGISTRY_MASTER_KEY=fd08697f-435c-4916-9c85-d0e50bbb8913
 Run the following command to publish all schemas to the Iglu server bundled with Snowplow-mini:
 
 ```bash
-$ /path/to/igluctl static push ./schemas $SNOWPLOW_MINI_IP:8081 $IGLU_REGISTRY_MASTER_KEY --public
+$ /path/to/igluctl static push ./schemas $SNOWPLOW_MINI_IP/iglu-server/ $IGLU_REGISTRY_MASTER_KEY --public
 ```
 
 Note that you can specify individual schemas if you prefer e.g.
 
 ```bash
-$ /path/to/igluctl static push ./schemas/com.mycompany/my_new_event_schema $SNOWPLOW_MINI_IP:8081 $IGLU_REGISTRY_MASTER_KEY --public
+$ /path/to/igluctl static push ./schemas/com.mycompany/my_new_event_schema $SNOWPLOW_MINI_IP/iglu-server/ $IGLU_REGISTRY_MASTER_KEY --public
 ```
 
-Also note that if you're editing existing schemas, the server will need to be rebooted to clear the schema cache. This can be done directly in the EC2 console, or ping support@snowplowanalytics.com to ask a member of the Snowplow team to do so.
+Also note that if you're editing existing schemas, the server applications will need to be rebooted to clear the schema cache. This can be done directly from the server using the Control Plane tab that can be found in the UI.
 
 ### 2.2 Upload the schemas to Iglu for the full pipeline
 

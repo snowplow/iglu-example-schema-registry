@@ -16,7 +16,7 @@ Once you have completed the above, you can send in data that conforms to the sch
 We recommend setting up the following two tools before staring:
 
 1. Git so you can easily clone the repo and make updates to it.
-2. [Igluctl] [igluctl]. This is a command line tool for validating schemas, auto-generating associated SQL table definition and jsonpath files and publishing them to snowplow-mini or S3
+2. [Igluctl][igluctl]. This is a command line tool for validating schemas, auto-generating associated SQL table definition and jsonpath files and publishing them to snowplow-mini or S3
 
 ## 1. Creating the schemas
 
@@ -109,7 +109,7 @@ Then push it to S3 bucket:
 $ /path/to/igluctl static s3cp ./schemas snowplow-com-mycompany-iglu-schemas-bucket --accessKeyId ABCDEF --secretAccessKey GHIJKILM/12345XYZ --region us-east-1
 ```
 
-Note that you also can pass credentials via configuration file or environment variables, as with any [AWS tool] [aws-credentials].
+Note that you also can pass credentials via configuration file or environment variables, as with any [AWS tool][aws-credentials].
 
 Useful resources
 
@@ -197,7 +197,7 @@ For more detail, please see the technical documentation for the specific tracker
 
 Note: we recommend testing that the data you're sending into Snowplow conforms to the schemas you've defined and uploaded into Iglu, before pushing updates into production. This [online JSON schema validator](http://www.jsonschemavalidator.net/) is a very useful resource for doing so.
 
-We also recommend testing that the events are sent successfully using Snowplow-Mini. You do this by configuring the collector in the tracker to `$SNOWPLOW_MINI_IP:8080` and then logging onto `http://$SNOWPLOW_MINI_IP` to review the results e.g. in Kibana. (Follow the links on the page.) Note that you need to have your IP whitelisted before you can view data on Snowplow-mini.
+We also recommend testing that the events are sent successfully using Snowplow-Mini. You do this by configuring the collector in the tracker to `$SNOWPLOW_MINI_IP` and then logging onto `http://$SNOWPLOW_MINI_IP/home/` to review the results e.g. in Kibana. (Follow the links on the page.)
 
 ## 7. Managing schema migrations
 
@@ -214,7 +214,7 @@ If you want to change your schema over time, you will need to:
 Documentation on jsonschemas:
 
 * Other example jsonschemas can be found in [Iglu Central](https://github.com/snowplow/iglu-central/tree/master/schemas). Note how schemas are namespaced in different folders
-* [Schema Guru] [schema-guru-online] is an [online] [schema-guru-online] and [command line tool] [schema-guru-github] for programmatically generating schemas from existing JSON data
+* [Schema Guru][schema-guru-online] is an [online][schema-guru-online] and [command line tool][schema-guru-github] for programmatically generating schemas from existing JSON data
 * [Snowplow 0.9.5 release blog post](http://snowplowanalytics.com/blog/2014/07/09/snowplow-0.9.5-released-with-json-validation-shredding/), which gives an overview of the way that Snowplow uses jsonschemas to process, validate and shred unstructured event and custom context JSONs
 * It can be useful to test jsonschemas using online validators e.g. [this one](http://jsonschemalint.com/draft4/)
 * [json-schema.org](http://json-schema.org/) contains links to the actual jsonschema specification, examples and guide for schema authors
@@ -225,7 +225,7 @@ Documentation on jsonpaths:
 * Example jsonpath files can be found on the [Snowplow repo](https://github.com/snowplow/snowplow/tree/master/4-storage/redshift-storage/jsonpaths). Note that the corresponding jsonschema definitions are stored in [Iglu central](https://github.com/snowplow/iglu-central/tree/master/schemas)
 * Amazon documentation on jsonpath files can be found [here](http://docs.aws.amazon.com/redshift/latest/dg/copy-usage_notes-copy-from-json.html)
 
-Documentaiton on creating tables in Redshift:
+Documentation on creating tables in Redshift:
 
 * Example Redshift table definitions can be found on the [Snowplow repo](https://github.com/snowplow/snowplow/tree/master/4-storage/redshift-storage/sql). Note that corresponding jsonschema definitions are stored in [Iglu central](https://github.com/snowplow/iglu-central/tree/master/schemas)
 * Amazon documentation on Redshift create table statements can be found [here](http://docs.aws.amazon.com/redshift/latest/dg/r_CREATE_TABLE_NEW.html). A list of Redshift data types can be found [here](http://docs.aws.amazon.com/redshift/latest/dg/c_Supported_data_types.html)

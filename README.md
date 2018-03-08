@@ -26,7 +26,7 @@ In order to start sending a new event or context type into Snowplow, you first n
 2. Create the schema in that file. Follow the `/schemas/com.example_company/example_event/jsonschema/1-0-0` example
 3. Save the schema file
 
-Note that if you have JSON data already and you want to create a corresponding schema, you can do so using [Schema Guru][schema-guru-online], both the [web UI][schema-guru-online] and the [CLI][schema-guru-github].
+Note that if you have JSON data already and you want to create a corresponding schema, you can do so using the [Schema Guru CLI][schema-guru-github] tool.
 
 Once you have your schema, make sure to validate it using [igluctl]:
 
@@ -57,8 +57,8 @@ Once you have created or updated your schemas, you need to push them to Iglu so 
 
 This is a two part process:
 
-1. [Upload the schemas to snowplow-mini](snowplow-mini) (for testing)
-2. [Upload the schemas to Iglu for the full pipeline](full)
+1. [Upload the schemas to Snowplow Mini](#21-upload-the-schemas-to-snowplow-mini) (for testing)
+2. [Upload the schemas to Iglu for the full pipeline](#22-upload-the-schemas-to-iglu-for-the-full-pipeline)
 
 ### 2.1 Upload the schemas to snowplow-mini
 
@@ -77,7 +77,7 @@ SET SNOWPLOW_MINI_IP=127.0.0.1
 SET IGLU_REGISTRY_MASTER_KEY=fd08697f-435c-4916-9c85-d0e50bbb8913
 ```
 
-Run the following command to publish all schemas to the Iglu server bundled with Snowplow-mini:
+Run the following command to publish all schemas to the Iglu server bundled with Snowplow Mini:
 
 ```bash
 $ /path/to/igluctl static push ./schemas $SNOWPLOW_MINI_IP/iglu-server/ $IGLU_REGISTRY_MASTER_KEY --public
@@ -214,7 +214,7 @@ If you want to change your schema over time, you will need to:
 Documentation on jsonschemas:
 
 * Other example jsonschemas can be found in [Iglu Central](https://github.com/snowplow/iglu-central/tree/master/schemas). Note how schemas are namespaced in different folders
-* [Schema Guru][schema-guru-online] is an [online][schema-guru-online] and [command line tool][schema-guru-github] for programmatically generating schemas from existing JSON data
+* [Schema Guru][schema-guru-github] is a [command line tool][schema-guru-github] for programmatically generating schemas from existing JSON data
 * [Snowplow 0.9.5 release blog post](http://snowplowanalytics.com/blog/2014/07/09/snowplow-0.9.5-released-with-json-validation-shredding/), which gives an overview of the way that Snowplow uses jsonschemas to process, validate and shred unstructured event and custom context JSONs
 * It can be useful to test jsonschemas using online validators e.g. [this one](http://jsonschemalint.com/draft4/)
 * [json-schema.org](http://json-schema.org/) contains links to the actual jsonschema specification, examples and guide for schema authors
@@ -222,7 +222,7 @@ Documentation on jsonschemas:
 
 Documentation on jsonpaths:
 
-* Example jsonpath files can be found on the [Snowplow repo](https://github.com/snowplow/snowplow/tree/master/4-storage/redshift-storage/jsonpaths). Note that the corresponding jsonschema definitions are stored in [Iglu central](https://github.com/snowplow/iglu-central/tree/master/schemas)
+* Example jsonpath files can be found in [Iglu central](https://github.com/snowplow/iglu-central/tree/master/jsonpaths). Note that the corresponding jsonschema definitions are also stored in [Iglu central](https://github.com/snowplow/iglu-central/tree/master/schemas)
 * Amazon documentation on jsonpath files can be found [here](http://docs.aws.amazon.com/redshift/latest/dg/copy-usage_notes-copy-from-json.html)
 
 Documentation on creating tables in Redshift:

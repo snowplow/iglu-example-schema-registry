@@ -40,16 +40,10 @@ For Windows:
 > java -jar /path/to/igluctl lint /path/to/schemas/com.mycompany/my_new_event_or_context
 ```
 
-Igluctl has two severity levels that it can use when validating schemas. By default it uses level (1), which checks that the schemas are simply valid. We recommend validating schemas against a higher level (2). This will fail schemas that:
+Igluctl will fail validating schemas that:
 
 1. Define a string field without a `maxLength` property. That ensures that when e.g. the corresponding Redshift table DDL is generated, the correct associated column length can be unambiguously set
 2. Define a numeric field without a `minimum` and `maximum` properties. That ensures that the when e.g. the corresponding Redshift table DDL is generated, the right numeric field type is set.
-
-To lint the schemas using the higher severity level (2) run:
-
-```
-$ /path/to/igluctl lint /path/to/schemas/com.mycompany/my_new_event_or_context --severityLevel 2
-```
 
 ## 2. Uploading the schemas to Iglu
 

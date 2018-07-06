@@ -11,24 +11,37 @@
 	"type": "object",
 	"properties": {
 		"exampleStringField": {
+			"description": "Example string field",
 			"type": "string",
 			"maxLength": 255
 		},
 		"exampleIntegerField": {
+			"description": "Example integer field",		
 			"type": "integer",
 			"minimum": 0,
 			"maximum": 100000
 		},
 		"exampleNumericField": {
-			"type": "number",
+			"description": "Example number field",		
+			"type": ["number","null"],
  			"multipleOf": 0.0001,
 			"minimum": -1000000,
 			"maximum":  1000000
 		},
 		"exampleTimestampField": {
-			"type": "string",
+			"description": "Example timestamp field",				
+			"type": ["string","null"],
 			"format": "date-time"
-		}
+		},
+		"exampleArray": {
+            "description": "Example array",		
+            "type": ["array","null"],
+            "items": {
+                "type": ["string","null"],
+                "description": "Each item inside the array",   
+                "maxLength": 50                                              
+            }                        
+        }
 	},
 	"minProperties":1,
 	"required": ["exampleStringField", "exampleIntegerField"],

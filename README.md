@@ -1,5 +1,7 @@
 # example-schema-registry
 
+[![License][license-image]][license]
+
 ## Overview
 
 Before you can send your own event and context types into Snowplow (using the track unstructured events or track self-describing events and custom contexts features of Snowplow), you need to:
@@ -229,6 +231,22 @@ Documentation on creating tables in Redshift:
 
 * Example Redshift table definitions can be found on the [Snowplow repo](https://github.com/snowplow/snowplow/tree/master/4-storage/redshift-storage/sql). Note that corresponding jsonschema definitions are stored in [Iglu central](https://github.com/snowplow/iglu-central/tree/master/schemas)
 * Amazon documentation on Redshift create table statements can be found [here](http://docs.aws.amazon.com/redshift/latest/dg/r_CREATE_TABLE_NEW.html). A list of Redshift data types can be found [here](http://docs.aws.amazon.com/redshift/latest/dg/c_Supported_data_types.html)
+
+## Copyright and license
+
+The Iglu Example Schema Registry is copyright 2014-2022 Snowplow Analytics Ltd.
+
+Licensed under the **[Apache License, Version 2.0][license]** (the "License");
+you may not use this software except in compliance with the License.
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+
+[license-image]: https://img.shields.io/badge/license-Apache--2-blue.svg?style=flat
+[license]: https://www.apache.org/licenses/LICENSE-2.0
 
 [aws-credentials]: http://docs.aws.amazon.com/cli/latest/userguide/cli-chap-getting-started.html#config-settings-and-precedence
 [schema-guru-online]: http://schemaguru.snowplowanalytics.com/

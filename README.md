@@ -3,6 +3,12 @@
 [![License][license-image]][license]
 [![Discourse posts][discourse-image]][discourse]
 
+# OUTDATED
+
+This repository and instructions below are outdated. Please see https://docs.snowplow.io/docs/understanding-tracking-design/managing-your-data-structures/iglu/ for information on how to manage your schemas in Iglu.
+
+---
+
 ## Overview
 
 Before you can send your own self-describing events and context entities into Snowplow, you need to:
